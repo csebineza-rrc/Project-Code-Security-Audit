@@ -2,30 +2,34 @@ name: Bandit Security Scan
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
+
+permissions:
+    contents: read
 
 jobs:
   bandit_scan:
+    name: Run Bandit
     runs-on: ubuntu-latest
+
     permissions:
       contents: read
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/checkout@v5
         with:
-          python-version: "3.11"
+          fetch-depth: 0
+          persist-credentials: false
 
-      - name: Install Bandit
-        run: pip install bandit
-
-      - name: Run Bandit 
-        run: bandit -r .
-
-      - name: Run Bandit 
-        run: bandit -r . -f json -o bandit-output.json
+      - name: Super-linter
+        uses: PyCQA/bandit-action@v1
+        with: 
+            path: "."
+            level: high
+            confidence: high
+            exit_zero: true           
