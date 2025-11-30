@@ -1,21 +1,16 @@
-name: Bandit Security Scan
+nname: Bandit Security Scan
 
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
   pull_request:
-    branches:
-      - main
+    branches: [ "main" ]
 
 jobs:
   bandit_scan:
-    name: Run Bandit
     runs-on: ubuntu-latest
-
     permissions:
       contents: read
-      security-events: write
 
     steps:
       - name: Checkout code
@@ -29,12 +24,8 @@ jobs:
       - name: Install Bandit
         run: pip install bandit
 
-      - name: Run Bandit (text output + SARIF)
-        run: |
-          bandit -r .
-          bandit -r . -f sarif -o bandit-results.sarif
+      - name: Run Bandit 
+        run: bandit -r .
 
-      - name: Upload SARIF to GitHub Security
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: bandit-results.sarif
+      - name: Run Bandit 
+        run: bandit -r . -f json -o bandit-output.json
